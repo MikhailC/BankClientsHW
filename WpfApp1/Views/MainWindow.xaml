@@ -8,109 +8,82 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
 
         xmlns:local="clr-namespace:WpfApp1"
+        xmlns:helper="clr-namespace:WpfApp1.Helper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        MinHeight="600"
+        MinWidth="1000"
+        >
     <!--  xmlns:viewModel="clr-namespace:WpfApp1.ViewModels"-->
     <Window.Resources>
-        <ControlTemplate x:Key="TextBoxErrorTemplate">
-           
-                
-
-                <Border BorderBrush="Red" BorderThickness="2">
-                    <StackPanel Orientation="Horizontal">
-                    <AdornedElementPlaceholder />
-                    <TextBlock Text="*"></TextBlock>
-                    </StackPanel>
-                </Border>
-            
-        </ControlTemplate>
+     
     </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <ContentControl prism:RegionManager.RegionName="OperatorSelector" DockPanel.Dock="Top"/>
 
-    <Grid>
+
+        <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
 
         </Grid.ColumnDefinitions>
+      
+   
         
 <DockPanel Grid.Column="0" LastChildFill="True" HorizontalAlignment="Stretch">
-    <StackPanel DockPanel.Dock="Top">
-         
-               <ComboBox Name="OperatorSelector" SelectedValue="{Binding SelectedOperator}">
-                   <ComboBox.Items>
-                       <ComboBoxItem Content="Operator" ></ComboBoxItem>
-                       <ComboBoxItem Content="Manager"></ComboBoxItem>
-        
-                   </ComboBox.Items>
-        </ComboBox>
-                   
-                   <StackPanel Orientation="Vertical">
-                       <Label Content="Role:"></Label> 
-                       <TextBox IsReadOnly="True" Text="{Binding Operator.Name, Mode=OneWay}" HorizontalAlignment="Stretch"></TextBox>
-                   </StackPanel>
-    </StackPanel>
-    <Button Name="Add" Content="Add" Command="{Binding AddNew}" DockPanel.Dock="Bottom"/>
+
+
+    <Button Margin="5,5,5,5" Name="Add" Content="Add" Command="{Binding AddNew}" DockPanel.Dock="Bottom"/>
 
         
     <DataGrid x:Name="BankClients" 
-              AutoGenerateColumns="True" 
+              AutoGenerateColumns="False" 
               ItemsSource="{Binding Clients}" 
               SelectedItem="{Binding CurrentClient}" 
               CurrentItem="{Binding CurrentClient}" 
               CanUserAddRows="False"
+              IsReadOnly="True"
               VerticalAlignment="Stretch"
               CanUserDeleteRows="False"
-              IsSynchronizedWithCurrentItem="True" SelectionChanged="BankClients_OnSelectionChanged">
+             
+              >
+        <!--IsSynchronizedWithCurrentItem="True" -->
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SelectionChanged">
+                <prism:InvokeCommandAction Command="{Binding GridSelectionChanged}"></prism:InvokeCommandAction>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+       <DataGrid.Columns>
+            <DataGridTextColumn Header="First name" Binding="{Binding Path=FirstName}" ></DataGridTextColumn>
+            <DataGridTextColumn Header="Second name" Binding="{Binding Path=SecondName}" ></DataGridTextColumn>
+            <DataGridTextColumn Header="Last name" Binding="{Binding Path=LastName}" ></DataGridTextColumn>
+            <DataGridTextColumn Header="Phone" Binding="{Binding Path=Phone}" ></DataGridTextColumn>
+            <DataGridTextColumn Header="Passport series" Binding="{Binding Path=PassportSeries}" ></DataGridTextColumn>
+            <DataGridTextColumn Header="Passport number" Binding="{Binding Path=PassportNumber}" ></DataGridTextColumn>
+
+        </DataGrid.Columns>
+
     </DataGrid>
 
      
       
 </DockPanel>
         
-           
-              
-            
-            <StackPanel  Grid.Column="1" Background="Aqua">
-                <Label  Content="First name"/>
-                <!--Text="{Binding ElementName=BankClients , Path=SelectedItem.FirstName, Mode=TwoWay}-->
-                <TextBox  HorizontalAlignment="Stretch" Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}" Margin="5,5,5,5">
-                    
-                    <Binding ElementName="BankClients" Mode="TwoWay" Path="SelectedItem.FirstName">
-                        <Binding.ValidationRules>
-                            <ExceptionValidationRule></ExceptionValidationRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox>
-           
-                <Label Content="Second name"/>
-                <TextBox   HorizontalAlignment="Stretch" Margin="5,5,5,5">
-                    <Binding ElementName="BankClients" Mode="TwoWay" Path="SelectedItem.SecondName">
-                        <Binding.ValidationRules>
-                            <ExceptionValidationRule></ExceptionValidationRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox>
-                
-                
-                <Label  Content="Last name"/>
-                <TextBox  HorizontalAlignment="Stretch" Margin="5,5,5,5">
-                    <Binding ElementName="BankClients" Mode="TwoWay" Path="SelectedItem.LastName">
-                        <Binding.ValidationRules>
-                            <ExceptionValidationRule></ExceptionValidationRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox>
-                
-                <Label Content="Passport series"/>
-                <TextBox  Text="{Binding ElementName=BankClients , Path=SelectedItem.PassportSeries, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
-                <Label  Content="Passport number"/>
-                <TextBox  Text="{Binding ElementName=BankClients , Path=SelectedItem.PassportNumber, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
-                <Label  Content="Phone"/>
-                <TextBox  Text="{Binding ElementName=BankClients , Path=SelectedItem.Phone, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
+       
+        <ContentControl prism:RegionManager.RegionName="ClientEditForm" Grid.Column="1" />
 
-            </StackPanel>
-
+        
         </Grid> 
-     
+    </DockPanel>
   
 </Window>

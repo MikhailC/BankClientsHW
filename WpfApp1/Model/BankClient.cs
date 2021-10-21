@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Runtime.CompilerServices;
-using WpfApp1.Annotations;
+using Prism.Mvvm;
 
 namespace WpfApp1.Model
 {
-    public class BankClient:INotifyPropertyChanged
+    public class BankClient:BindableBase,INotifyDataErrorInfo
     {
         private string _passportSeries;
         private string _passportNumber;
         private string _phone;
         private string _firstName;
-
-       
-
         private string _secondName;
         private string _lastName;
       
@@ -30,12 +30,12 @@ namespace WpfApp1.Model
                 if (e.PropertyName == "Operator")
                 {
                     Accessor = Configuration.Instance.Operator;
-                    OnPropertyChanged(nameof(Phone));
-                    OnPropertyChanged(nameof(FirstName));
-                    OnPropertyChanged(nameof(LastName));
-                    OnPropertyChanged(nameof(SecondName));
-                    OnPropertyChanged(nameof(PassportNumber));
-                    OnPropertyChanged(nameof(PassportSeries));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(Phone)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(FirstName)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(LastName)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(SecondName)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(PassportNumber)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(PassportSeries)));
                     
                 }
             };
@@ -44,6 +44,7 @@ namespace WpfApp1.Model
         public BankClient(string passportSeries, string passportNumber, string phone, string firstName, string secondName,
             string lastName):this()
         {
+            
             _passportSeries = passportSeries ?? throw new ArgumentNullException(nameof(passportSeries));
             _passportNumber = passportNumber ?? throw new ArgumentNullException(nameof(passportNumber));
             _phone = phone ?? throw new ArgumentNullException(nameof(phone));
@@ -63,9 +64,8 @@ namespace WpfApp1.Model
                     {
                         throw new ApplicationException("Name is mandatory.");
                     }
-                    if (value == _firstName) return;
-                    _firstName = value;
-                    OnPropertyChanged();
+                    SetProperty(ref _firstName, value);
+
                 }
             }
         }
@@ -82,9 +82,8 @@ namespace WpfApp1.Model
                     {
                         throw new ApplicationException("Second name is mandatory.");
                     }
-                    if (value == _secondName) return;
-                    _secondName = value;
-                    OnPropertyChanged();
+                    SetProperty(ref _secondName, value);
+                   
                 }
             }
             
@@ -101,37 +100,43 @@ namespace WpfApp1.Model
                     {
                         throw new ApplicationException("Last Name is mandatory.");
                     }
-                    if (value == _lastName) return;
-                    _lastName = value;
-                    OnPropertyChanged();
+
+                    SetProperty(ref _lastName, value);
+
                 }
             }
+            
+            
+        }
+
+        private string GetSecuredString(string line)
+        {
+            if (string.IsNullOrEmpty(line)) return "";
+            return Accessor is Manager ? line : PasswordString;
         }
 
         public string PassportSeries
         {
-            get=>Accessor is Manager?_passportSeries:PasswordString;
+            get => GetSecuredString(_passportSeries);
             set
             {
-                if (Accessor is Manager)
+                
+              if (Accessor is Manager)
                 {
-                    if (value == _passportSeries) return;
-                    _passportSeries = value;
-                    OnPropertyChanged();
+                    SetProperty(ref _passportSeries, value);
+
                 }
             }
         }
 
         public string PassportNumber
         {
-            get=>Accessor  is Manager?_passportNumber:PasswordString;
+            get=>GetSecuredString(_passportNumber);
             set
             {
                 if (Accessor is Manager)
                 {
-                    if (value == _passportNumber) return;
-                    _passportNumber = value;
-                    OnPropertyChanged();
+                    SetProperty(ref _passportNumber, value);
                 }
             }
         }
@@ -143,21 +148,46 @@ namespace WpfApp1.Model
             {
                 if (!string.IsNullOrEmpty(value) || Accessor is Manager)
                 {
-                    if (value == _phone) return;
-                    _phone = value;
-                    OnPropertyChanged();
+                    SetProperty(ref _phone, value);
                 }
             }
 
         }
 
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        
+        public IEnumerable GetErrors(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            List<string> errors=new List<string>();
+            if (string.IsNullOrEmpty(propertyName) || !HasErrors) 
+                return null;
+            if (propertyName == "FirstName" && string.IsNullOrWhiteSpace(FirstName))
+                errors.Add("First name should be filled");
+            if(propertyName == "SecondName" && string.IsNullOrWhiteSpace(SecondName))
+                errors.Add("Second name should be filled");
+            if (propertyName == "LastName" && string.IsNullOrEmpty(LastName))
+                errors.Add("Last name should be filled");
+            if(propertyName == "Phone" && Accessor is Operator && string.IsNullOrEmpty(Phone))
+                errors.Add("Phone should be filled");
+
+            return errors;
+        }
+
+        public bool HasErrors => string.IsNullOrWhiteSpace(FirstName) ||
+                                 string.IsNullOrWhiteSpace(SecondName) ||
+                                 string.IsNullOrWhiteSpace(LastName) ||
+                                 (Accessor is Operator && string.IsNullOrWhiteSpace(Phone));
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        bool CheckValid()
+        {
+            if(string.IsNullOrWhiteSpace(FirstName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("FirstName"));
+            if(string.IsNullOrWhiteSpace(SecondName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("SecondName"));
+            if(string.IsNullOrWhiteSpace(SecondName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("LastName"));
+            if(Accessor is Operator && string.IsNullOrWhiteSpace(SecondName)) 
+                ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("Phone"));
+ 
+            
+            return HasErrors;
         }
     }
 }

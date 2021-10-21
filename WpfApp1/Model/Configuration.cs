@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using WpfApp1.Annotations;
+using Prism.Mvvm;
 
 namespace WpfApp1.Model
 {
-    public sealed class Configuration:INotifyPropertyChanged
+    public sealed class Configuration:BindableBase
     {
         private IOperator _operator;
         private static Configuration? _instance;
@@ -16,25 +16,19 @@ namespace WpfApp1.Model
         public IOperator Operator
         {
             get => _operator;
-            set { _operator = value; OnPropertyChanged();}
+            set { SetProperty(ref _operator , value); }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        
 
         static Configuration()
         {
             
         }
 
-        private Configuration()
+        public  Configuration():base()
         {
             _operator = BankOperator;
+            _instance = this;
         }
 
         public static Configuration Instance=>_instance ??= new Configuration();

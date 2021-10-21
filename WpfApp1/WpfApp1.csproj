@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MaterialDesignThemes" Version="4.3.0-ci62" />
       <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
       <PackageReference Include="Prism.Unity" Version="8.1.97" />

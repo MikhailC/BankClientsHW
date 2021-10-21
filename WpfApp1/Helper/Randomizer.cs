@@ -8,7 +8,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using WpfApp1.Annotations;
 using WpfApp1.Model;
 
 
@@ -18,7 +17,6 @@ namespace WpfApp1.Helper
     {
         private const string URL = "";
 
-        [CanBeNull]
         static async Task<List<string>> getRandomData(string Type, Dictionary<string, string> parameters, int count = 100)
         {
             HttpClient client = new HttpClient();
@@ -43,9 +41,10 @@ namespace WpfApp1.Helper
             else return null;
         }
 
-        public static async Task<bool> GetData(ICollection<BankClient> col, int quantity)
+        public static async Task<ICollection<BankClient>> GetData(ICollection<BankClient>? col, int quantity)
         {
-          
+
+            if (col is null) col = new List<BankClient>();
                 var names = await getRandomData("Name", new Dictionary<string, string>
                 {
                     {"nameType", "firstname"},
@@ -82,7 +81,7 @@ namespace WpfApp1.Helper
                         phones[i], names[i], secondNames[i], surNames[i]));
                 }
 
-                return true;
+                return col;
            
 
         }

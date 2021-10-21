@@ -1,6 +1,8 @@
 ﻿
 using System.Windows;
 using System.Windows.Controls;
+using BankClientsPresenter.Views;
+using Prism.Regions;
 
 namespace WpfApp1.Views
 {
@@ -9,15 +11,13 @@ namespace WpfApp1.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(IRegionManager regionManager)
         {
             InitializeComponent();
+            regionManager.RegisterViewWithRegion("ClientEditForm", typeof(ClientEditForm));
+            regionManager.RegisterViewWithRegion("OperatorSelector", typeof(OperatorSelector));
+
         }
 
-        private void BankClients_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var g = sender as DataGrid;
-            g.ScrollIntoView(g.SelectedItem);
-        }
-    }
+          }
 }

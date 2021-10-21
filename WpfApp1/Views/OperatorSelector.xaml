@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="BankClientsPresenter.Views.OperatorSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:BankClientsPresenter.Views"
+             mc:Ignorable="d"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <StackPanel DockPanel.Dock="Top">
+         
+        <ComboBox Name="OperatorSelector1" SelectedValue="{Binding SelectedOperator}">
+            <ComboBox.Items>
+                <ComboBoxItem Content="Operator" ></ComboBoxItem>
+                <ComboBoxItem Content="Manager"></ComboBoxItem>
+        
+            </ComboBox.Items>
+        </ComboBox>
+                   
+        <StackPanel Orientation="Vertical">
+            <Label Content="Role:"></Label> 
+            <TextBox IsReadOnly="True" Text="{Binding Operator.Name, Mode=OneWay}" HorizontalAlignment="Stretch"></TextBox>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
