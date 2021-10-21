@@ -29,7 +29,7 @@
                    >
                 <Label  Content="First name"/>
                 <!--Text="{Binding ElementName=BankClients , Path=SelectedItem.FirstName, Mode=TwoWay}-->
-                <TextBox  HorizontalAlignment="Stretch"  Margin="5,5,5,5" 
+                <TextBox  IsReadOnly="{Binding IsReadOnly}" HorizontalAlignment="Stretch"  Margin="5,5,5,5" 
                           Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
                     <TextBox.Text>
                         <Binding Path="CurrentLine.FirstName" Mode="TwoWay" ValidatesOnNotifyDataErrors="True">
@@ -46,7 +46,7 @@
                 </TextBox>
            
                 <Label Content="Second name"/>
-                <TextBox   HorizontalAlignment="Stretch" Margin="5,5,5,5"
+                <TextBox   IsReadOnly="{Binding IsReadOnly}" HorizontalAlignment="Stretch" Margin="5,5,5,5"
                            Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
                     <TextBox.Text>
                         <Binding Path="CurrentLine.SecondName" Mode="TwoWay" ValidatesOnNotifyDataErrors="True">
@@ -59,22 +59,26 @@
                 
                 
                 <Label  Content="Last name"/>
-                <TextBox  HorizontalAlignment="Stretch" Margin="5,5,5,5"
+                <TextBox  IsReadOnly="{Binding IsReadOnly}" HorizontalAlignment="Stretch" Margin="5,5,5,5"
                           Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
                     <TextBox.Text>
                     <Binding  Path="CurrentLine.LastName" Mode="TwoWay" ValidatesOnNotifyDataErrors="True">
-                        <Binding.ValidationRules>
+                   <!--     <Binding.ValidationRules>
                             <ExceptionValidationRule></ExceptionValidationRule>
-                        </Binding.ValidationRules>
+                        </Binding.ValidationRules>-->
                     </Binding></TextBox.Text>
                 </TextBox>
                 
                 <Label Content="Passport series"/>
-                <TextBox Text="{Binding CurrentLine.PassportSeries, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
+                <TextBox  IsReadOnly="{Binding IsReadOnly }" 
+                          Text="{Binding CurrentLine.PassportSeries, Mode=TwoWay, ValidatesOnNotifyDataErrors=True}" 
+                          HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
                 <Label  Content="Passport number"/>
-                <TextBox  Text="{Binding CurrentLine.PassportNumber, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
+                <TextBox   IsReadOnly="{Binding IsReadOnly}" 
+                           Text="{Binding CurrentLine.PassportNumber, Mode=TwoWay, ValidatesOnNotifyDataErrors=True}" 
+                           HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
                 <Label  Content="Phone"/>
-                <TextBox  Text="{Binding CurrentLine.Phone, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
+                <TextBox  Text="{Binding CurrentLine.Phone, Mode=TwoWay, ValidatesOnNotifyDataErrors=True}" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
    
             </StackPanel>
     <Button Margin="5,5,5,5"

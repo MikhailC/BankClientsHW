@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
@@ -29,6 +31,7 @@ namespace WpfApp1.ViewModels
                 var tmp = _configuration.Operator;
                 _configuration.Operator = value;
                 SetProperty(ref tmp, value);
+                OnPropertyChanged(new PropertyChangedEventArgs("IsReadOnly"));
                 
             }
         }
@@ -49,6 +52,10 @@ namespace WpfApp1.ViewModels
 
             }
         }
+        
+        public bool IsReadOnly=>!(Operator is Manager);
+        
+        
         #region Commands
 
         public ICommand AddNew => new AutoCanExecuteCommand(new DelegateCommand(() =>

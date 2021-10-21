@@ -168,14 +168,20 @@ namespace WpfApp1.Model
                 errors.Add("Last name should be filled");
             if(propertyName == "Phone" && Accessor is Operator && string.IsNullOrEmpty(Phone))
                 errors.Add("Phone should be filled");
-
+            if(propertyName == "PassportNumber" && Accessor is Operator && string.IsNullOrEmpty(PassportNumber))
+                errors.Add("Passport Number should be filled");
+            if(propertyName == "PassportSeries" && Accessor is Operator && string.IsNullOrEmpty(PassportSeries))
+                errors.Add("Passport Series should be filled");
             return errors;
         }
 
         public bool HasErrors => string.IsNullOrWhiteSpace(FirstName) ||
                                  string.IsNullOrWhiteSpace(SecondName) ||
                                  string.IsNullOrWhiteSpace(LastName) ||
-                                 (Accessor is Operator && string.IsNullOrWhiteSpace(Phone));
+                                 string.IsNullOrWhiteSpace(Phone)||
+                                 string.IsNullOrWhiteSpace(PassportSeries)||
+                                 string.IsNullOrWhiteSpace(PassportNumber)
+                                 ;
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         bool CheckValid()
@@ -183,8 +189,12 @@ namespace WpfApp1.Model
             if(string.IsNullOrWhiteSpace(FirstName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("FirstName"));
             if(string.IsNullOrWhiteSpace(SecondName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("SecondName"));
             if(string.IsNullOrWhiteSpace(SecondName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("LastName"));
-            if(Accessor is Operator && string.IsNullOrWhiteSpace(SecondName)) 
+            if(string.IsNullOrWhiteSpace(Phone)) 
                 ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("Phone"));
+            if(string.IsNullOrWhiteSpace(PassportNumber)) 
+                ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("PassportNumber"));
+            if(string.IsNullOrWhiteSpace(PassportSeries)) 
+                ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("PassportSeries"));
  
             
             return HasErrors;
