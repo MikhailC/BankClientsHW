@@ -65,7 +65,7 @@ namespace WpfApp1.Model
                         throw new ApplicationException("Name is mandatory.");
                     }
                     SetProperty(ref _firstName, value);
-
+                    CheckValid();
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace WpfApp1.Model
                         throw new ApplicationException("Second name is mandatory.");
                     }
                     SetProperty(ref _secondName, value);
-                   
+                    CheckValid();
                 }
             }
             
@@ -102,7 +102,7 @@ namespace WpfApp1.Model
                     }
 
                     SetProperty(ref _lastName, value);
-
+                    CheckValid();
                 }
             }
             
@@ -123,8 +123,12 @@ namespace WpfApp1.Model
                 
               if (Accessor is Manager)
                 {
+                    if (String.IsNullOrEmpty(value))
+                    {
+                        throw new ApplicationException("Passport Series is mandatory.");
+                    }
                     SetProperty(ref _passportSeries, value);
-
+                    CheckValid();
                 }
             }
         }
@@ -136,7 +140,12 @@ namespace WpfApp1.Model
             {
                 if (Accessor is Manager)
                 {
+                    if (String.IsNullOrEmpty(value))
+                    {
+                        throw new ApplicationException("Passport Number is mandatory.");
+                    }
                     SetProperty(ref _passportNumber, value);
+                    CheckValid();
                 }
             }
         }
@@ -148,7 +157,12 @@ namespace WpfApp1.Model
             {
                 if (!string.IsNullOrEmpty(value) || Accessor is Manager)
                 {
+                    if (String.IsNullOrEmpty(value))
+                    {
+                        throw new ApplicationException("Phone is mandatory.");
+                    }
                     SetProperty(ref _phone, value);
+                    CheckValid();
                 }
             }
 
@@ -186,9 +200,12 @@ namespace WpfApp1.Model
 
         bool CheckValid()
         {
-            if(string.IsNullOrWhiteSpace(FirstName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("FirstName"));
-            if(string.IsNullOrWhiteSpace(SecondName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("SecondName"));
-            if(string.IsNullOrWhiteSpace(SecondName)) ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("LastName"));
+            if(string.IsNullOrWhiteSpace(FirstName)) 
+                ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("FirstName"));
+            if(string.IsNullOrWhiteSpace(SecondName)) 
+                ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("SecondName"));
+            if(string.IsNullOrWhiteSpace(SecondName)) 
+                ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("LastName"));
             if(string.IsNullOrWhiteSpace(Phone)) 
                 ErrorsChanged!.Invoke(this, new DataErrorsChangedEventArgs("Phone"));
             if(string.IsNullOrWhiteSpace(PassportNumber)) 
