@@ -41,9 +41,16 @@
         
 <DockPanel Grid.Column="0" LastChildFill="True" HorizontalAlignment="Stretch">
 
+<Grid DockPanel.Dock="Bottom">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition></ColumnDefinition>
+        <ColumnDefinition></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+    <Button Margin="5,5,5,5" Name="Add" Content="Add" Command="{Binding AddNew}" />
+    <Button Grid.Column="1" Margin="5,5,5,5" Name="Delete" Content="Delete" Command="{Binding DeleteClient}" DockPanel.Dock="Bottom"/>
 
-    <Button Margin="5,5,5,5" Name="Add" Content="Add" Command="{Binding AddNew}" DockPanel.Dock="Bottom"/>
-
+</Grid>
+ 
         
     <DataGrid x:Name="BankClients" 
               AutoGenerateColumns="False" 

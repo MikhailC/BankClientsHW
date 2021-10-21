@@ -19,7 +19,7 @@ namespace WpfApp1.ViewModels
         private BankClient? currentLine;
 
         private  ComboBoxItem _selectedOperator;
-        private object _currentClient;
+        private BankClient? _currentClient;
 
         public  IOperator Operator
         {
@@ -64,17 +64,30 @@ namespace WpfApp1.ViewModels
                 }, 
               ()=> CurrentLine is not null&&CurrentLine!=CurrentClient&&!CurrentLine.HasErrors ));
 
+        public ICommand DeleteClient =>
+            new AutoCanExecuteCommand(
+                new DelegateCommand(
+                    () =>
+                    {
+                        Clients.Remove(CurrentClient);
+                        CurrentLine = null;
+                    },
+                    () => CurrentClient is not null&&Operator is Manager&&CurrentClient==CurrentLine));
         public ICommand GridSelectionChanged => new DelegateCommand<SelectionChangedEventArgs>((SelectionChangedEventArgs e) =>
         {
+            
             var g = e.Source as DataGrid;
-            g.ScrollIntoView(g.SelectedItem);
-            CurrentLine = g.SelectedItem as BankClient;
+            if (g.SelectedItem is not null)
+            {
+                g.ScrollIntoView(g.SelectedItem);
+                CurrentLine = g.SelectedItem as BankClient;
+            }
         });
         #endregion 
-        public object CurrentClient
+        public BankClient? CurrentClient
         {
             get => _currentClient;
-            set => SetProperty<object>(ref _currentClient , value);
+            set => SetProperty(ref _currentClient , value);
         }
 
         public BankClient? CurrentLine
